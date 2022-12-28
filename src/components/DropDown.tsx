@@ -18,7 +18,7 @@ const Dropdown = ({ year }: IProps) => {
           <Link to={`/report/${year}/annual`}>Annual Report</Link>
         </li>
         <li>
-          <Link to={`report/${year}/monthly`}>Monthly Report</Link>
+          <Link to={`/report/${year}`}>Monthly Report</Link>
         </li>
       </ul>
     </div>
