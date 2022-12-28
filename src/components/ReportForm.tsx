@@ -1,5 +1,6 @@
 import { useState } from "react";
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const ReportForm = () => {
   const [reportsData, setReportsData] = useState({
     mother_name: "",
@@ -118,7 +119,7 @@ const ReportForm = () => {
       <div className="flex gap-4">
         <div className="form-control w-full ">
           <label className="label">
-            <span className="label-text">Baby Gender ?</span>
+            <span className="label-text">Baby Gender </span>
           </label>
           <div className="flex">
             <div className="form-control">
@@ -165,6 +166,24 @@ const ReportForm = () => {
             <option value="gentle">Gentle</option>
             <option value="caesar">Caesar</option>
           </select>
+        </div>
+      </div>
+      <div className="form-control  ">
+        <label className="label w-1/2">
+          <span className="label-text">Birth Date</span>
+        </label>
+        <div>
+          <DatePicker
+            className="border border-black w-1/2 text-center hover:cursor-pointer"
+            dateFormat="dd-MM-yyyy"
+            selected={reportsData.date}
+            onChange={(val: Date) =>
+              setReportsData((prevState) => ({
+                ...prevState,
+                date: val,
+              }))
+            }
+          />
         </div>
       </div>
       <div className="flex gap-8 my-4">
