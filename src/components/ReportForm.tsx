@@ -1,6 +1,8 @@
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
+
 const ReportForm = () => {
   const [reportsData, setReportsData] = useState({
     mother_name: "",
@@ -10,6 +12,7 @@ const ReportForm = () => {
     baby_weight: "",
     baby_length: "",
     birthing_method: "",
+    birth_description: "",
     date: new Date(),
   });
   const handleSubmit = (e: any) => {
@@ -23,6 +26,7 @@ const ReportForm = () => {
       baby_weight: "",
       baby_length: "",
       birthing_method: "",
+      birth_description: "",
       date: new Date(),
     });
   };
@@ -168,22 +172,50 @@ const ReportForm = () => {
           </select>
         </div>
       </div>
-      <div className="form-control  ">
-        <label className="label w-1/2">
-          <span className="label-text">Birth Date</span>
-        </label>
-        <div>
-          <DatePicker
-            className="border border-black w-1/2 text-center hover:cursor-pointer"
-            dateFormat="dd-MM-yyyy"
-            selected={reportsData.date}
-            onChange={(val: Date) =>
+
+      <div className="flex gap-4">
+        <div className="form-control w-full">
+          <label className="label w-1/2">
+            <span className="label-text">Birth Date</span>
+          </label>
+          <div>
+            <DatePicker
+              className="border border-black w-1/2 text-center hover:cursor-pointer"
+              dateFormat="dd-MM-yyyy"
+              selected={reportsData.date}
+              onChange={(val: Date) =>
+                setReportsData((prevState) => ({
+                  ...prevState,
+                  date: val,
+                }))
+              }
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={1}
+            />
+          </div>
+        </div>
+
+        <div className="form-control w-full ">
+          <label className="label">
+            <span className="label-text">Birth Description</span>
+          </label>
+          <select
+            className="select select-bordered"
+            onChange={(e) =>
               setReportsData((prevState) => ({
                 ...prevState,
-                date: val,
+                birth_description: e.target.value,
               }))
             }
-          />
+          >
+            <option disabled selected>
+              Pick one
+            </option>
+            <option value="healthy">healthy</option>
+            <option value="disabled">disabled</option>
+            <option value="died">died</option>
+          </select>
         </div>
       </div>
       <div className="flex gap-8 my-4">
