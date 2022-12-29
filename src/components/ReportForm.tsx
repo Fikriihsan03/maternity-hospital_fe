@@ -1,35 +1,94 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+const url = process.env.REACT_APP_API_URL;
 
-const ReportForm = () => {
+function postData(data: object) {
+  console.log(data);
+  fetch(`${url}/api/v1/child-birth`, {
+    method: "POST", // or 'PUT'
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === 200) {
+        alert("success");
+      }
+      alert(data.message);
+      return window.location.reload();
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+function putData(data: object, id: number) {
+  fetch(`${url}/api/v1/child-birth/${id}`, {
+    method: "PUT", // or 'PUT'
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === 200) {
+        alert("success");
+      }
+      alert(data.message);
+      return window.location.reload();
+      // console.log("failed");
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+interface IProps {
+  editData?: any;
+}
+const ReportForm = ({ editData }: IProps) => {
+  const [isEdit, setIsEdit] = useState(false);
   const [reportsData, setReportsData] = useState({
     mother_name: "",
-    mother_age: "",
-    gestational_age: "",
+    mother_age: 0,
+    gestational_age: 0,
     baby_gender: "",
-    baby_weight: "",
-    baby_length: "",
+    baby_weight: 0,
+    baby_length: 0,
     birthing_method: "",
     birth_description: "",
-    date: new Date(),
   });
+  useEffect(() => {
+    if (editData != null) {
+      const { id, created_at, updated_at, ...restOfData } = editData;
+      setReportsData(restOfData);
+      setIsEdit(true);
+    }
+  }, [editData]);
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    alert(JSON.stringify(reportsData));
+    if (isEdit) {
+      putData(reportsData, editData.id);
+      setIsEdit(false);
+    } else {
+      postData(reportsData);
+    }
     setReportsData({
       mother_name: "",
-      mother_age: "",
-      gestational_age: "",
+      mother_age: 0,
+      gestational_age: 0,
       baby_gender: "",
-      baby_weight: "",
-      baby_length: "",
+      baby_weight: 0,
+      baby_length: 0,
       birthing_method: "",
       birth_description: "",
-      date: new Date(),
     });
   };
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="form-control w-full ">
@@ -54,14 +113,14 @@ const ReportForm = () => {
           <span className="label-text">Mother Age</span>
         </label>
         <input
-          type="text"
+          type="number"
           placeholder="Type here"
           className="input input-bordered w-full "
           value={reportsData.mother_age}
           onChange={(e) =>
             setReportsData((prevState) => ({
               ...prevState,
-              mother_age: e.target.value,
+              mother_age: +e.target.value,
             }))
           }
         />
@@ -71,14 +130,14 @@ const ReportForm = () => {
           <span className="label-text">Gestational Age</span>
         </label>
         <input
-          type="text"
+          type="number"
           placeholder="Type here"
           className="input input-bordered w-full "
           value={reportsData.gestational_age}
           onChange={(e) =>
             setReportsData((prevState) => ({
               ...prevState,
-              gestational_age: e.target.value,
+              gestational_age: +e.target.value,
             }))
           }
         />
@@ -89,14 +148,14 @@ const ReportForm = () => {
             <span className="label-text">Baby Weight (kg)</span>
           </label>
           <input
-            type="text"
+            type="number"
             placeholder="Type here"
             className="input input-bordered w-full "
             value={reportsData.baby_weight}
             onChange={(e) =>
               setReportsData((prevState) => ({
                 ...prevState,
-                baby_weight: e.target.value,
+                baby_weight: +e.target.value,
               }))
             }
           />
@@ -107,21 +166,21 @@ const ReportForm = () => {
             <span className="label-text">Baby Length (cm)</span>
           </label>
           <input
-            type="text"
+            type="number"
             placeholder="Type here"
             className="input input-bordered w-full "
             value={reportsData.baby_length}
             onChange={(e) =>
               setReportsData((prevState) => ({
                 ...prevState,
-                baby_length: e.target.value,
+                baby_length: +e.target.value,
               }))
             }
           />
         </div>
       </div>
       <div className="flex gap-4">
-        <div className="form-control w-full ">
+        <div className="form-control w-full">
           <label className="label">
             <span className="label-text">Baby Gender </span>
           </label>
@@ -131,7 +190,14 @@ const ReportForm = () => {
                 <input
                   type="radio"
                   name="radio-10"
+                  value="male"
                   className="radio checked:bg-blue-500"
+                  onChange={(e) =>
+                    setReportsData((prevState) => ({
+                      ...prevState,
+                      baby_gender: e.target.value,
+                    }))
+                  }
                 />
                 <span className="label-text">Male</span>
               </label>
@@ -141,7 +207,14 @@ const ReportForm = () => {
                 <input
                   type="radio"
                   name="radio-10"
+                  value="female"
                   className="radio checked:bg-red-500"
+                  onChange={(e) =>
+                    setReportsData((prevState) => ({
+                      ...prevState,
+                      baby_gender: e.target.value,
+                    }))
+                  }
                 />
                 <span className="label-text">Female</span>
               </label>
@@ -161,7 +234,7 @@ const ReportForm = () => {
               }))
             }
           >
-            <option disabled selected>
+            <option value="" disabled selected>
               Pick one
             </option>
             <option value="lotus">Lotus</option>
@@ -174,28 +247,6 @@ const ReportForm = () => {
       </div>
 
       <div className="flex gap-4">
-        <div className="form-control w-full">
-          <label className="label w-1/2">
-            <span className="label-text">Birth Date</span>
-          </label>
-          <div>
-            <DatePicker
-              className="border border-black w-1/2 text-center hover:cursor-pointer"
-              dateFormat="dd-MM-yyyy"
-              selected={reportsData.date}
-              onChange={(val: Date) =>
-                setReportsData((prevState) => ({
-                  ...prevState,
-                  date: val,
-                }))
-              }
-              showTimeSelect
-              timeFormat="HH:mm"
-              timeIntervals={1}
-            />
-          </div>
-        </div>
-
         <div className="form-control w-full ">
           <label className="label">
             <span className="label-text">Birth Description</span>
@@ -209,7 +260,7 @@ const ReportForm = () => {
               }))
             }
           >
-            <option disabled selected>
+            <option value="" disabled selected>
               Pick one
             </option>
             <option value="healthy">healthy</option>

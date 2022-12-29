@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 interface IProps{
   children:ReactNode
 }
-const TableReport = ({children}:IProps) => {
+const Card = ({children}:IProps) => {
   return (
     <div className="card w-full bg-base-100 shadow-xl">
       <div className="card-body">
@@ -13,4 +13,4 @@ const TableReport = ({children}:IProps) => {
   );
 };
 
-export default TableReport;
+export default Card;
