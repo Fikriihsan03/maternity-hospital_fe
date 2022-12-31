@@ -228,7 +228,7 @@ const ReportForm = ({ editData }: IProps) => {
                   name="radio-10"
                   value="male"
                   className="radio checked:bg-blue-500"
-                  checked={reportsData.baby_gender==="male"}
+                  checked={reportsData.baby_gender === "male"}
                   onChange={(e) =>
                     setReportsData((prevState) => ({
                       ...prevState,
@@ -245,7 +245,7 @@ const ReportForm = ({ editData }: IProps) => {
                   type="radio"
                   name="radio-10"
                   value="female"
-                  checked={reportsData.baby_gender==="female  "}
+                  checked={reportsData.baby_gender === "female"}
                   className="radio checked:bg-red-500"
                   onChange={(e) =>
                     setReportsData((prevState) => ({
