@@ -15,7 +15,7 @@ const AnnualReportView = () => {
   const [reportData, setReportData] = useState<IReportData>();
   const [rowData, setRowData] = useState({
     id: 0,
-    mother_name: "",
+    mother_id: 0,
     mother_age: 0,
     gestational_age: 0,
     baby_gender: 0,
@@ -28,7 +28,7 @@ const AnnualReportView = () => {
   });
 
   useEffect(() => {
-    fetch(`${url}/api/v1/child-birth/report/${year}/annual`)
+    fetch(`${url}/api/v1/report/${year}/annual`)
       .then((res) => res.json())
       .then((data) => {
         setReportData(data);
@@ -52,7 +52,6 @@ const AnnualReportView = () => {
         }
         alert(data.message);
         return window.location.reload();
-        // console.log("failed");
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -66,7 +65,10 @@ const AnnualReportView = () => {
           {`${year}`} Birthing Annual Report
         </h2>
         <h2 className="font-bold text-lg">Total</h2>
-        <p>Total Baby Birth : {reportData?.data.totalBaby}</p>
+        <div className="grid grid-cols-4">
+          <p>Total Birth Mothers : {reportData?.data.total_mother}</p>
+          <p>Total Baby Birth : {reportData?.data.total_baby}</p>
+        </div>
         <h2 className="font-bold text-lg">Birth Status</h2>
         <div className="grid grid-cols-4 gap-4 ">
           <p>Healthy Baby: {reportData?.data.birth_description.healthy}</p>
@@ -88,7 +90,7 @@ const AnnualReportView = () => {
         </div>
         <h2 className="font-bold text-lg">Average Gestational Age A Year</h2>
         <div className="grid grid-cols-4 gap-4">
-          <p>Average : {reportData?.average_gestational_age}</p>
+          <p>Average : {reportData?.data.average_gestational_age}</p>
         </div>
         <h2 className="font-bold text-lg">Maternal Age Group</h2>
         <div className="overflow-x-auto">
@@ -100,11 +102,11 @@ const AnnualReportView = () => {
               </tr>
             </thead>
             <tbody>
-              {reportData?.maternal_age_group.map((item) => {
+              {reportData?.data.maternal_age_group.map((item) => {
                 return (
-                  <tr>
+                  <tr key={item.mother_age}>
                     <th>{item.mother_age}</th>
-                    <td>{item.total}</td>
+                    <td>{item.total_baby}</td>
                   </tr>
                 );
               })}

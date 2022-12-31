@@ -6,7 +6,7 @@ import Table from "./Table";
 interface IProps {
   passingRowData: (data: object) => void;
   year?: string;
-  month?: string
+  month?: string;
 }
 const url = process.env.REACT_APP_API_URL;
 
@@ -22,18 +22,17 @@ function formatDate(date: Date) {
   ].join("-");
 }
 
-const BirthHistoryTable = ({ passingRowData, year, month="" }: IProps) => {
+const BirthHistoryTable = ({ passingRowData, year, month = "" }: IProps) => {
   const [birthHistory, setBirthHistory] = useState<IHistory>();
   const [page, setPage] = useState(1);
 
   useEffect(() => {
     fetch(
-      `${url}/api/v1/child-birth/birth-history?page=${page}&per-page=2&year=${year}&month=${month}`
+      `${url}/api/v1/birth-history?page=${page}&per-page=10&year=${year}&month=${month}`
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log(`${url}/api/v1/child-birth/birth-history?page=${page}&per-page=2&year=${year}&month=${month}`)
-        if (data.message == 'success') {
+        if (data.message == "success") {
           setBirthHistory(data.data);
         }
       });
@@ -45,11 +44,12 @@ const BirthHistoryTable = ({ passingRowData, year, month="" }: IProps) => {
         <Table>
           {birthHistory?.data.map((data) => {
             return (
-              <tr>
+              <tr key={data.id}>
                 <td>{formatDate(new Date(data.updated_at))}</td>
-                <td>{data.mother_name}</td>
                 <td>{data.baby_gender}</td>
-                <td>{data.mother_age}</td>
+                <td>{data.birth_description}</td>
+                <td>{data.baby_weight}</td>
+                <td>{data.baby_length}</td>
                 <td>
                   <Dropdown title="Action">
                     <li onClick={() => passingRowData(data)}>

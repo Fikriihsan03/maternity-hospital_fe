@@ -1,7 +1,9 @@
 export interface IReportData {
   message: string;
   data: {
-    totalBaby: number;
+    total_baby: number;
+    total_mother:number;
+    average_gestational_age: string;
     birth_description: {
       healthy: number;
       disabled: number;
@@ -18,12 +20,11 @@ export interface IReportData {
       gentle: number;
       caesar: number;
     };
-  };
-    average_gestational_age: string;
     maternal_age_group: [
       {
         mother_age: string;
-        total: number;
+        total_baby: number;
       }
     ];
+  };
 }

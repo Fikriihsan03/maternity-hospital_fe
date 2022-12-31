@@ -7,7 +7,7 @@ const AnnualReportList = () => {
   const [yearList, setYearList] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/v1/child-birth/report`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/v1/report`)
       .then((res) => res.json())
       .then((data) => {
         let list: Array<string> = [];
