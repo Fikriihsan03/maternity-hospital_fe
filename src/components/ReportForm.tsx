@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 const url = process.env.REACT_APP_API_URL;
 
-function postData(data: object) {
-  console.log(data);
+function postData(data: IReportData) {
+  data.mother_nik = +data.mother_nik;
   fetch(`${url}/api/v1/child-birth`, {
     method: "POST", // or 'PUT'
     headers: {
@@ -41,18 +39,30 @@ function putData(data: object, id: number) {
       }
       alert(data.message);
       return window.location.reload();
-      // console.log("failed");
     })
     .catch((error) => {
       console.error("Error:", error);
     });
 }
+
 interface IProps {
   editData?: any;
 }
+interface IReportData {
+  mother_nik: string | number;
+  mother_name: string;
+  mother_age: number;
+  gestational_age: number;
+  baby_gender: string;
+  baby_weight: number;
+  baby_length: number;
+  birthing_method: string;
+  birth_description: string;
+}
 const ReportForm = ({ editData }: IProps) => {
   const [isEdit, setIsEdit] = useState(false);
-  const [reportsData, setReportsData] = useState({
+  const [reportsData, setReportsData] = useState<IReportData>({
+    mother_nik: "",
     mother_name: "",
     mother_age: 0,
     gestational_age: 0,
@@ -62,13 +72,16 @@ const ReportForm = ({ editData }: IProps) => {
     birthing_method: "",
     birth_description: "",
   });
+
   useEffect(() => {
     if (editData != null) {
       const { id, created_at, updated_at, ...restOfData } = editData;
-      setReportsData(restOfData);
+
+      setReportsData(editData);
       setIsEdit(true);
     }
   }, [editData]);
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (isEdit) {
@@ -78,6 +91,7 @@ const ReportForm = ({ editData }: IProps) => {
       postData(reportsData);
     }
     setReportsData({
+      mother_nik: "",
       mother_name: "",
       mother_age: 0,
       gestational_age: 0,
@@ -91,23 +105,45 @@ const ReportForm = ({ editData }: IProps) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="form-control w-full ">
-        <label className="label">
-          <span className="label-text">Mother Name</span>
-        </label>
-        <input
-          type="text"
-          placeholder="Type here"
-          className="input input-bordered w-full "
-          value={reportsData.mother_name}
-          onChange={(e) =>
-            setReportsData((prevState) => ({
-              ...prevState,
-              mother_name: e.target.value,
-            }))
-          }
-        />
-      </div>
+      {!isEdit && (
+        <>
+          <div className="form-control w-full ">
+            <label className="label">
+              <span className="label-text">Mother NIK (16 digits)</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input input-bordered w-full "
+              value={reportsData.mother_nik}
+              onChange={(e) =>
+                setReportsData((prevState) => ({
+                  ...prevState,
+                  mother_nik: e.target.value,
+                }))
+              }
+            />
+          </div>
+          <div className="form-control w-full ">
+            <label className="label">
+              <span className="label-text">Mother Name</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Type here"
+              className="input input-bordered w-full "
+              value={reportsData.mother_name}
+              onChange={(e) =>
+                setReportsData((prevState) => ({
+                  ...prevState,
+                  mother_name: e.target.value,
+                }))
+              }
+            />
+          </div>
+        </>
+      )}
+
       <div className="form-control w-full ">
         <label className="label">
           <span className="label-text">Mother Age</span>
@@ -192,6 +228,7 @@ const ReportForm = ({ editData }: IProps) => {
                   name="radio-10"
                   value="male"
                   className="radio checked:bg-blue-500"
+                  checked={reportsData.baby_gender==="male"}
                   onChange={(e) =>
                     setReportsData((prevState) => ({
                       ...prevState,
@@ -208,6 +245,7 @@ const ReportForm = ({ editData }: IProps) => {
                   type="radio"
                   name="radio-10"
                   value="female"
+                  checked={reportsData.baby_gender==="female  "}
                   className="radio checked:bg-red-500"
                   onChange={(e) =>
                     setReportsData((prevState) => ({
@@ -227,6 +265,7 @@ const ReportForm = ({ editData }: IProps) => {
           </label>
           <select
             className="select select-bordered"
+            value={reportsData.birthing_method}
             onChange={(e) =>
               setReportsData((prevState) => ({
                 ...prevState,
@@ -234,7 +273,7 @@ const ReportForm = ({ editData }: IProps) => {
               }))
             }
           >
-            <option value="" disabled selected>
+            <option value="" disabled>
               Pick one
             </option>
             <option value="lotus">Lotus</option>
@@ -253,6 +292,7 @@ const ReportForm = ({ editData }: IProps) => {
           </label>
           <select
             className="select select-bordered"
+            value={reportsData.birth_description}
             onChange={(e) =>
               setReportsData((prevState) => ({
                 ...prevState,
@@ -260,7 +300,7 @@ const ReportForm = ({ editData }: IProps) => {
               }))
             }
           >
-            <option value="" disabled selected>
+            <option value="" disabled>
               Pick one
             </option>
             <option value="healthy">healthy</option>
