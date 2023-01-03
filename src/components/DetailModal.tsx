@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import dataService from "../services/DataServices";
 import Modal from "./Modal";
 
 function padTo2Digits(num: number) {
@@ -40,11 +41,9 @@ const DetailModal = ({ rowData }: IProps) => {
 
   useEffect(() => {
     if (rowData.id != 0) {
-      fetch(`${url}//api/v1/child-birth/${rowData.id}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setData(data);
-        });
+      dataService.get(`/api/v1/child-birth/${rowData.id}`).then((data) => {
+        setData(data);
+      });
     }
   }, [rowData]);
 

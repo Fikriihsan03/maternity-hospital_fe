@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
+import dataService from "../services/DataServices";
 
 const url = process.env.REACT_APP_API_URL;
 
 function postData(data: IReportData) {
   data.mother_nik = +data.mother_nik;
-  fetch(`${url}/api/v1/child-birth`, {
-    method: "POST", // or 'PUT'
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
+  dataService
+    .post(`/api/v1/child-birth`, data)
     .then((data) => {
       if (data.status === 200) {
         alert("success");
@@ -25,13 +20,8 @@ function postData(data: IReportData) {
 }
 
 function putData(data: object, id: number) {
-  fetch(`${url}/api/v1/child-birth/${id}`, {
-    method: "PUT", // or 'PUT'
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
+  dataService
+    .put(`/api/v1/child-birth/${id}`, data)
     .then((response) => response.json())
     .then((data) => {
       if (data.status === 200) {
