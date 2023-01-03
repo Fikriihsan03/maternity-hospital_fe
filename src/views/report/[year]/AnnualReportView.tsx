@@ -6,6 +6,7 @@ import Card from "../../../components/Card";
 import DetailModal from "../../../components/DetailModal";
 import Modal from "../../../components/Modal";
 import ReportForm from "../../../components/ReportForm";
+import dataService from "../../../services/DataServices";
 import { IReportData } from "./reportInterface";
 
 const url = process.env.REACT_APP_API_URL;
@@ -28,24 +29,17 @@ const AnnualReportView = () => {
   });
 
   useEffect(() => {
-    fetch(`${url}/api/v1/report/${year}/annual`)
-      .then((res) => res.json())
-      .then((data) => {
-        setReportData(data);
-      });
+    dataService.get(`/api/v1/report/${year}/annual`).then((data) => {
+      setReportData(data);
+    });
   }, []);
 
   const passingRowData = (data: any) => {
     setRowData(data);
   };
   const deleteHandler = (id: number) => {
-    fetch(`${url}/api/v1/child-birth/${id}`, {
-      method: "DELETE", // or 'PUT'
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
+    dataService
+      .delete(`/api/v1/child-birth/${id}`)
       .then((data) => {
         if (data.status === 200) {
           alert("success");

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import dataService from "../services/DataServices";
 import { IHistory } from "../views/report/[year]/birthHistoryInterface";
 import Dropdown from "./DropDown";
 import Table from "./Table";
@@ -27,14 +28,15 @@ const BirthHistoryTable = ({ passingRowData, year, month = "" }: IProps) => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    fetch(
-      `${url}/api/v1/birth-history?page=${page}&per-page=10&year=${year}&month=${month}`
-    )
-      .then((res) => res.json())
+    dataService
+      .get(`/api/v1/birth-history`, {
+        page: page,
+        "per-page": 10,
+        year: year,
+        month: month,
+      })
       .then((data) => {
-        if (data.message == "success") {
-          setBirthHistory(data.data);
-        }
+        setBirthHistory(data.data);
       });
   }, [page]);
   if (birthHistory) {

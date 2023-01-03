@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Dropdown from "../../components/DropDown";
+import dataService from "../../services/DataServices";
 
 const data = ["2020", "2021", "2022", "2023"];
 const AnnualReportList = () => {
   const [yearList, setYearList] = useState<string[]>([]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/v1/report`)
-      .then((res) => res.json())
+    dataService.get('/api/v1/report')
       .then((data) => {
         let list: Array<string> = [];
         data.data.map((year: any) => list.push(year.year));
